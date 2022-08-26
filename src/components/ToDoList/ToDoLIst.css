@@ -1,0 +1,18 @@
+
+
+.error-border{
+    border: 2px solid hotpink;
+}
+
+.error-text {
+    color: hotpink;
+}
+
+.height{
+    height: 20px;
+}
+
+.active-filter{
+    outline: none;
+    background-color: hotpink;
+}
