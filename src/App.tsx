@@ -1,6 +1,6 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Todolist} from './components/ToDoList/Todolist';
+import {TaskType, Todolist} from './components/ToDoList/Todolist';
 import {v1} from 'uuid';
 import {AddItemForm} from './components/AddItemForm/AddItemForm';
 
@@ -10,6 +10,10 @@ type ToDoListsArrayType = {
     id: string
     title: string
     filter: FilterValuesType
+}
+
+type TasksStateType = {
+    [key: string]: Array<TaskType>
 }
 
 
@@ -40,6 +44,22 @@ function App() {
             setTasks({...tasksObj})
         }
     }
+    const changeTaskTitle = (taskId: string, newTitle: string, toDoListsID: string) => {
+        let filToDoListArray = tasksObj[toDoListsID]
+        const taskTitle = filToDoListArray.find(t => t.id === taskId)
+        if (taskTitle) {
+            taskTitle.title = newTitle
+            setTasks({...tasksObj})
+        }
+    }
+
+    const changeToDoListTitle = (taskId: string, newTitle: string) => {
+        const toDoList = toDoListsArray.find(tl => tl.id === taskId);
+        if (toDoList){
+            toDoList.title = newTitle
+        }
+        setToDoListsArray([...toDoListsArray])
+    }
 
     const toDoListsID1 = v1()
     const toDoListsID2 = v1()
@@ -49,7 +69,7 @@ function App() {
         {id: toDoListsID2, title: 'What to buy?', filter: 'all'},
     ])
 
-    const [tasksObj, setTasks] = useState({
+    const [tasksObj, setTasks] = useState<TasksStateType>({
         [toDoListsID1]: [
             {id: v1(), title: 'HTML&CSS', isDone: true},
             {id: v1(), title: 'JS', isDone: true},
@@ -98,11 +118,13 @@ function App() {
             filter={tl.filter}
             changeStatus={changeStatus}
             removeToDoList={removeToDoList}
+            changeTaskTitle={changeTaskTitle}
+            changeToDoListTitle={changeToDoListTitle}
         />
     })
 
 
-    function addToDoList(title: string){
+    function addToDoList(title: string) {
         let toDoList: ToDoListsArrayType = {
             id: v1(),
             title: title,
