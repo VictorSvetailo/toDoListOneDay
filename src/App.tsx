@@ -1,16 +1,20 @@
 import React, {useState} from 'react';
 import './App.css';
-import {Todolist} from './components/ToDoList/Todolist';
+import {TaskType, Todolist} from './components/ToDoList/Todolist';
 import {v1} from 'uuid';
+import {AddItemsForm} from './components/AddItemsForm/AddItemsForm';
 
 export type FilterValuesType = 'all' | 'active' | 'completed';
 
-type toDoListsArrayType = {
+type ToDoListsArrayType = {
     id: string
     title: string
     filter: FilterValuesType
 }
 
+type TasksObjType = {
+    [key: string]: Array<TaskType>
+}
 
 function App() {
 
@@ -43,12 +47,12 @@ function App() {
     const toDoListsID1 = v1()
     const toDoListsID2 = v1()
 
-    const [toDoListsArray, setToDoListsArray] = useState<Array<toDoListsArrayType>>([
+    const [toDoListsArray, setToDoListsArray] = useState<Array<ToDoListsArrayType>>([
         {id: toDoListsID1, title: 'What to learn?', filter: 'all'},
         {id: toDoListsID2, title: 'What to buy?', filter: 'all'},
     ])
 
-    const [tasksObj, setTasks] = useState({
+    const [tasksObj, setTasks] = useState<TasksObjType>({
         [toDoListsID1]: [
             {id: v1(), title: 'HTML&CSS', isDone: true},
             {id: v1(), title: 'JS', isDone: true},
@@ -68,6 +72,12 @@ function App() {
         setToDoListsArray(toDoListRemove)
         delete tasksObj[toDoListsID]
         setTasks(tasksObj)
+    }
+
+    const addToDoList = (title: string) => {
+        const todolist: ToDoListsArrayType = {id: v1(), title: title, filter: 'all'}
+        setToDoListsArray([todolist, ...toDoListsArray])
+        setTasks({...tasksObj, [todolist.id]: []})
     }
 
 
@@ -103,7 +113,7 @@ function App() {
 
     return (
         <div className="App">
-
+            <AddItemsForm addItem={addToDoList}/>
             {toDoLists}
         </div>
     );
