@@ -2,6 +2,7 @@ import React, {ChangeEvent, MouseEvent} from 'react';
 import {FilterValuesType} from '../../App';
 import './ToDoLIst.css'
 import {AddItemsForm} from '../AddItemsForm/AddItemsForm';
+import {EditableSpan} from '../EditableSpan/EditableSpan';
 
 export type TaskType = {
     id: string
@@ -19,6 +20,8 @@ type PropsType = {
     filter: FilterValuesType
     changeStatus: (taskId: string, isDone: boolean, toDoListsID: string) => void
     removeToDoList: (toDoListsID: string) => void
+    changeTaskTitle: (taskId: string, changeTitle: string, toDoListsID: string) => void
+    changeToDoListTitle: (changeTitle: string, id: string) => void
 }
 
 export function Todolist(props: PropsType) {
@@ -27,10 +30,13 @@ export function Todolist(props: PropsType) {
         const onChangeStatusHandler = (e: ChangeEvent<HTMLInputElement>) => {
             props.changeStatus(t.id, e.currentTarget.checked, props.id)
         }
+        const changeTitleHandler = (changeTitle: string) => {
+            props.changeTaskTitle(t.id, changeTitle, props.id)
+        }
 
         return <li key={t.id}>
             <input type="checkbox" onChange={onChangeStatusHandler} checked={t.isDone}/>
-            <span>{t.title}</span>
+            <EditableSpan title={t.title} changeTitle={changeTitleHandler}/>
             <button onClick={onClickHandler}>x</button>
         </li>
     })
@@ -43,13 +49,16 @@ export function Todolist(props: PropsType) {
         props.removeToDoList(props.id)
     }
 
+    const changeTitleToDoListHandler = (changeTitle: string) => {
+        props.changeToDoListTitle(changeTitle, props.id)
+    }
 
     const addTask = (title: string) => {
-      props.addTask(title, props.id)
+        props.addTask(title, props.id)
     }
     return <div>
         <h3>
-            {props.title}
+            <EditableSpan title={props.title} changeTitle={changeTitleToDoListHandler}/>
             <button onClick={onClickRemoveToDoListHandler}>x</button>
         </h3>
         <AddItemsForm addItem={addTask}/>
